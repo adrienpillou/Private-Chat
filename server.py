@@ -17,11 +17,12 @@ def handle_client(connection, address):
     ip_address = address[0]
     ip_lookup[ip_address] = connection.recv(64).decode(FORMAT)
     connected = True
-    print(f"New connection: {ip_address} connected as {ip_lookup[ip_address]}.")
+    client_username = ip_lookup[ip_address]
+    print(f"New connection: {ip_address} connected as {client_username}.")
     while connected:
         message = connection.recv(512).decode(FORMAT)
-        print(f"{ip_lookup[ip_address]} > {message}")
-        broadcast_message(f"{ip_lookup[ip_address]} > {message}", connection)
+        print(f"{client_username} > {message}")
+        broadcast_message(f"{client_username} > {message}", connection)
         if(message == "!disconnect"):
             connected = False
     connection.close()
