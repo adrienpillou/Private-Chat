@@ -1,8 +1,10 @@
 import sqlite3
 from os import path
 import time
+from cryptography.fernet import Fernet
 
 DB_FILE_NAME = "database.db"
+KEY = b'SPLWZqP5ACmhNbDQGGyHQTwf_1_9kWRpaX8b-_RT1o0='
 
 def get_user_id_by_name(username):
     db_connection = sqlite3.connect("database.db")
@@ -58,7 +60,8 @@ def create_database():
         CREATE TABLE messages(
             time REAL PRIMARY KEY,
             user_id INTEGER,
-            content TEXT
+            content TEXT,
+            FOREIGN KEY(user_id) REFERENCES users(id)
         );
     """)
     db_connection.commit()
@@ -66,11 +69,19 @@ def create_database():
     db_connection.close()
     print(f"Inexistent database. Database created as '{DB_FILE_NAME}'.")
 
+def encrypt(text):
+    f = Fernet(KEY)
+    return f.encrypt(text.encode())
+
+def decrypt(bytes):
+    f = Fernet(KEY)
+    return f.decrypt(bytes)
+
 def add_user(username, password):
     db_connection = sqlite3.connect("database.db")
     cursor = db_connection.cursor()
     cursor.execute(f"""
-        INSERT INTO users(username,password) VALUES ('{username}','{password}');
+        INSERT INTO users(username,password) VALUES ('{username}','{encrypt(password).decode()}');
     """)
     db_connection.commit()
     db_connection.close()
@@ -108,3 +119,6 @@ def printdb():
         print(u)
     db_connection.commit()
     db_connection.close()
+
+
+printdb()

@@ -1,0 +1,6 @@
+- Corriger les résultats des requetes: ne plus avoir de tuples
+- Symbole "\'" à prendre en compte
+- Chiffrer les messages
+- Déconnexion d'un client
+- Mettre la clé de chiffrement comme paramètre
+- git git git
